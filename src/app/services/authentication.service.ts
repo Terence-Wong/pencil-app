@@ -74,6 +74,9 @@ export class AuthenticationService {
   SignOut() {
     console.log("logout");
     return this.afAuth.auth.signOut().then(() => {
+      this.ngZone.run(() => {
+        this.router.navigate(['login']);
+      })
       localStorage.removeItem('user');
     })
   }

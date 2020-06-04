@@ -28,9 +28,11 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.sass"
+              "src/styles.sass",
+              "node_modules/medium-editor/dist/css/medium-editor.min.css",
+              "node_modules/medium-editor/dist/css/themes/default.css"
             ],
-            "scripts": []
+            "scripts": ["node_modules/medium-editor/dist/js/medium-editor.min.js"]
           },
           "configurations": {
             "production": {
@@ -123,6 +125,12 @@
           }
         }
       }
-    }},
-  "defaultProject": "pencil-app"
+    }
+  },
+  "defaultProject": "pencil-app",
+  "schematics": {
+    "@schematics/angular:component": {
+      "styleext": "sass"
+    }
+  }
 }
