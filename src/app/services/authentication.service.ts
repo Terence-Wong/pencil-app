@@ -4,6 +4,7 @@ import { AngularFireAuth } from "@angular/fire/auth";
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Router } from "@angular/router";
 import { User } from "./user";
+import { UserService } from "./user.service";
 
 
 @Injectable({
@@ -43,7 +44,7 @@ export class AuthenticationService {
 
   // Auth logic to run auth providers
   AuthLogin(provider) {
-    return this.afAuth.auth.signInWithPopup(provider)
+    return auth().signInWithPopup(provider)
     .then((result) => {
       this.ngZone.run(() => {
         this.router.navigate(['dashboard']);
@@ -73,7 +74,7 @@ export class AuthenticationService {
   // Sign out 
   SignOut() {
     console.log("logout");
-    return this.afAuth.auth.signOut().then(() => {
+    return auth().signOut().then(() => {
       this.ngZone.run(() => {
         this.router.navigate(['login']);
       })

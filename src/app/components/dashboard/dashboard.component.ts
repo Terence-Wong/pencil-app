@@ -1,6 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import MediumEditor from 'medium-editor';
 import { AuthenticationService } from '../../services/authentication.service';
+import { UserService } from '../../services/user.service';
+import { User } from '../../services/user'
+
 
 @Component({
   selector: 'app-dashboard',
@@ -15,6 +18,7 @@ export class DashboardComponent implements OnInit {
   constructor(public auth: AuthenticationService) { }
 
   ngOnInit(): void {
+    
   }
   @ViewChild('editable',{static: true}) editable: ElementRef;
 
