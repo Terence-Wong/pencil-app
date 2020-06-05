@@ -18,7 +18,8 @@ export class AuthenticationService {
     public afs: AngularFirestore,   // Inject Firestore service
     public afAuth: AngularFireAuth, // Inject Firebase auth service
     public router: Router,  
-    public ngZone: NgZone // NgZone service to remove outside scope warning
+    public ngZone: NgZone, // NgZone service to remove outside scope warning
+    private userdb: UserService
     ) { 
        /* Saving user data in localstorage when 
       logged in and setting up null when logged out */
@@ -36,6 +37,11 @@ export class AuthenticationService {
   get isLoggedIn(): boolean {
     const user = JSON.parse(localStorage.getItem('user'));
     return (user !== null && user.emailVerified !== false) ? true : false;
+  }
+
+  get userUID(): string {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user !== null ? user.uid : null;
   }
   // Sign in with Google
   GoogleAuth() {
@@ -67,6 +73,15 @@ export class AuthenticationService {
       emailVerified: user.emailVerified
     }
     console.log(userData)
+    //create/load user data
+    
+    this.userdb.getUsers().subscribe(res => {
+      console.log("this is all users btw")
+      console.log(res)
+       
+    })
+    
+
     return userRef.set(userData, {
       merge: true
     })

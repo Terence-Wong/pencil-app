@@ -14,10 +14,14 @@ export class UserService {
     return this.firestore.collection('users').snapshotChanges();
   }
   createUser(user: User){
-    return this.firestore.collection('users').add(user);
+    return new Promise<any>((resolve, reject) => {
+      this.firestore.collection('users')
+        .add(user)
+        .then(res => {}, err => reject(err))
+    });
   }
   updateUser(user: User){
-    delete user.uid;
+    //return this.firestore.collection('users').doc('users/' + user.uid).update(user);
     this.firestore.doc('users/' + user.uid).update(user);
   }
   //probably wont be used for this demo
@@ -25,3 +29,11 @@ export class UserService {
     this.firestore.doc('users/' + user.uid).delete();
   }
 }
+
+/**
+ * 
+ * eg create
+ * 
+ * this.UserService.createUser(user.data).then(res => { console.log("USER CREATED!")});
+ * 
+ */

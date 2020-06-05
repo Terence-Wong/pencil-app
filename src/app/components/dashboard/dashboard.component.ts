@@ -4,7 +4,6 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { UserService } from '../../services/user.service';
 import { User } from '../../services/user'
 
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -15,7 +14,9 @@ import { User } from '../../services/user'
 })
 export class DashboardComponent implements OnInit {
   editor: any;
-  constructor(public auth: AuthenticationService) { }
+  constructor(public auth: AuthenticationService, private userdb: UserService) {
+    
+  }
 
   ngOnInit(): void {
     
@@ -28,5 +29,10 @@ export class DashboardComponent implements OnInit {
       var text = editable.innerHTML; // getContent() returns the content of the editor as well
       console.log(text);
     });
+
+    
+
   }
+  
+
 }
