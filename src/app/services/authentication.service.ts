@@ -65,30 +65,61 @@ export class AuthenticationService {
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
   SetUserData(user) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-    const userData: User = {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
-      emailVerified: user.emailVerified
-    }
-    console.log(userData)
+    //create/load user data 
+    userRef.ref.get().then(userCloud => {
+      console.log("This is me trying to get the user");
+      if (!userCloud.exists){
+        console.log("user doesnt exist yet");
+        this.userData = {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+          emailVerified: user.emailVerified,
+          html: ""
+        }
+        userRef.set(this.userData, {
+          merge: true
+        })
+      }else{
+        console.log("user exists! here it is");
+        let data = userCloud.data();
+        console.log(data);
+        this.userData = {
+          uid: data.uid,
+          email: data.email,
+          displayName: data.displayName,
+          photoURL: data.photoURL,
+          emailVerified: data.emailVerified,
+          html: data.html
+        }
+      }
+    });
     //create/load user data
-    
+    /*
     this.userdb.getUsers().subscribe(res => {
       console.log("this is all users btw")
       console.log(res)
        
-    })
-    
+    })*/
+  
+  }
+  // Sign out
+  SignOutSave(data: string) {
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${this.userData.uid}`);
+    userRef.update({
+      html: data
+    });
 
-    return userRef.set(userData, {
-      merge: true
+    return auth().signOut().then(() => {
+      this.ngZone.run(() => {
+        this.router.navigate(['login']);
+      })
+      localStorage.removeItem('user');
     })
   }
-  // Sign out 
+  
   SignOut() {
-    console.log("logout");
     return auth().signOut().then(() => {
       this.ngZone.run(() => {
         this.router.navigate(['login']);

@@ -30,9 +30,11 @@ export class DashboardComponent implements OnInit {
       console.log(text);
     });
 
-    
-
   }
-  
+  signOut(): void{
+    console.log("signout called");
+    console.log(this.editor.getContent());
+    this.auth.SignOutSave(this.editor.getContent());
+  }
 
 }
