@@ -10,7 +10,7 @@ export const environment = {
     databaseURL: "https://pencilapp-63e23.firebaseio.com",
     projectId: "pencilapp-63e23",
     storageBucket: "pencilapp-63e23.appspot.com",
-    messagingSenderId: "515493708626"
+    messagingSenderId: "515493708626",
   }
 };
 

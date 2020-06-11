@@ -29,7 +29,8 @@ export class DashboardComponent implements OnInit {
       var text = editable.innerHTML; // getContent() returns the content of the editor as well
       console.log(text);
     });
-
+    console.log(this.auth.data);
+    this.editor.setContent(this.auth.data);
   }
   signOut(): void{
     console.log("signout called");

@@ -12,7 +12,7 @@ import { UserService } from "./user.service";
 })
 export class AuthenticationService {
   userData: any;
-
+  user: any;
 
   constructor(
     public afs: AngularFirestore,   // Inject Firestore service
@@ -43,30 +43,47 @@ export class AuthenticationService {
     const user = JSON.parse(localStorage.getItem('user'));
     return user !== null ? user.uid : null;
   }
+
+  get data(): string {
+    return this.userData.html;
+  }
   // Sign in with Google
   GoogleAuth() {
-    return this.AuthLogin(new auth.GoogleAuthProvider());
+    return this.AuthLogin(new auth.GoogleAuthProvider()).then(result => {
+      console.log("on noes2");
+      this.SetUserData(this.user).then(() => {
+        this.ngZone.run(() => {
+        
+          console.log("on noes2");
+          this.router.navigate(['dashboard']);
+        })
+      });
+    });
   }  
 
   // Auth logic to run auth providers
   AuthLogin(provider) {
+    //
     return auth().signInWithPopup(provider)
     .then((result) => {
-      this.ngZone.run(() => {
-        this.router.navigate(['dashboard']);
-      })
-      this.SetUserData(result.user);
+      this.user = result.user;
     }).catch((error) => {
       window.alert(error)
     })
   }
   /* Setting up user data when sign in with username/password, 
   sign up with username/password and sign in with social auth  
-  provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
-  SetUserData(user) {
+  provider in Firestore database using AngularFirestore + AngularFirestoreDocument service 
+  get GetUserData(): string{
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+
+  }
+  */
+  SetUserData(user) {
+    const userRef: AngularFirestoreDocument<any> = this.afs.collection('users').doc(`${user.uid}`);
+    console.log("setUser called");
     //create/load user data 
-    userRef.ref.get().then(userCloud => {
+    return userRef.ref.get().then(userCloud => {
       console.log("This is me trying to get the user");
       if (!userCloud.exists){
         console.log("user doesnt exist yet");
@@ -94,6 +111,8 @@ export class AuthenticationService {
           html: data.html
         }
       }
+    }).catch(err => {
+      console.log("error getting the user");
     });
     //create/load user data
     /*
@@ -106,7 +125,9 @@ export class AuthenticationService {
   }
   // Sign out
   SignOutSave(data: string) {
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${this.userData.uid}`);
+    const userRef: AngularFirestoreDocument<any> = this.afs.collection('users').doc(`${this.userData.uid}`);
+    console.log("saved data:");
+    console.log(data);
     userRef.update({
       html: data
     });
