@@ -50,11 +50,9 @@ export class AuthenticationService {
   // Sign in with Google
   GoogleAuth() {
     return this.AuthLogin(new auth.GoogleAuthProvider()).then(result => {
-      console.log("on noes2");
+      console.log("auth token should be ready by now");
       this.SetUserData(this.user).then(() => {
         this.ngZone.run(() => {
-        
-          console.log("on noes2");
           this.router.navigate(['dashboard']);
         })
       });
@@ -71,14 +69,6 @@ export class AuthenticationService {
       window.alert(error)
     })
   }
-  /* Setting up user data when sign in with username/password, 
-  sign up with username/password and sign in with social auth  
-  provider in Firestore database using AngularFirestore + AngularFirestoreDocument service 
-  get GetUserData(): string{
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-
-  }
-  */
   SetUserData(user) {
     const userRef: AngularFirestoreDocument<any> = this.afs.collection('users').doc(`${user.uid}`);
     console.log("setUser called");
@@ -114,14 +104,15 @@ export class AuthenticationService {
     }).catch(err => {
       console.log("error getting the user");
     });
-    //create/load user data
-    /*
-    this.userdb.getUsers().subscribe(res => {
-      console.log("this is all users btw")
-      console.log(res)
-       
-    })*/
   
+  }
+  Save(data: string){
+    const userRef: AngularFirestoreDocument<any> = this.afs.collection('users').doc(`${this.userData.uid}`);
+    console.log("saved data:");
+    console.log(data);
+    userRef.update({
+      html: data
+    });
   }
   // Sign out
   SignOutSave(data: string) {
