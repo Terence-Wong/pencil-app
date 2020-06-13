@@ -48,42 +48,19 @@ export class AuthenticationService {
   get data(): string {
     return this.userData.html;
   }
-  // Sign in with Google
-  GoogleAuth() {
-    this.AuthLogin(new auth.GoogleAuthProvider()).then(result => {
-      console.log("auth token should be ready by now");
-      this.SetUserData(this.user).then(() => {
-        this.ngZone.run(() => {
-          this.router.navigate(['dashboard']);
-        })
-      });
-    });
-  }  
 
-  // Auth logic to run auth providers
-  AuthLogin(provider) {
-    //
-    return auth().signInWithPopup(provider)
-    .then((result) => {
-      this.user = result.user;
-    }).catch((error) => {
-      window.alert(error)
-    })
-  }
-  SetUserData(user) {
-    const userRef: AngularFirestoreDocument<any> = this.afs.collection('users').doc(`${user.uid}`);
-    console.log("setUser called");
-    //create/load user data 
+  load() {
+    const userRef: AngularFirestoreDocument<any> = this.afs.collection('users').doc(`${this.userData.uid}`);
     return userRef.ref.get().then(userCloud => {
       console.log("This is me trying to get the user");
       if (!userCloud.exists){
         console.log("user doesnt exist yet");
         this.userData = {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-          emailVerified: user.emailVerified,
+          uid: this.userData.uid,
+          email: this.userData.email,
+          displayName: this.userData.displayName,
+          photoURL: this.userData.photoURL,
+          emailVerified: this.userData.emailVerified,
           html: ""
         }
         userRef.set(this.userData, {
@@ -105,6 +82,40 @@ export class AuthenticationService {
     }).catch(err => {
       console.log("error getting the user");
     });
+  }
+  // Sign in with Google
+  GoogleAuth() {
+    this.AuthLogin(new auth.GoogleAuthProvider()).then(result => {
+      console.log("auth token should be ready by now");
+      this.SetUserData(this.user);
+      this.ngZone.run(() => {
+        this.router.navigate(['dashboard']);
+      });
+    });
+  }  
+
+  // Auth logic to run auth providers
+  AuthLogin(provider) {
+    //
+    return auth().signInWithPopup(provider)
+    .then((result) => {
+      this.user = result.user;
+    }).catch((error) => {
+      window.alert(error)
+    })
+  }
+  SetUserData(user) {
+    console.log("setUser called");
+    //create base user data 
+
+    this.userData = {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+      emailVerified: user.emailVerified,
+      html: ""
+    } 
   
   }
   Save(data: string){

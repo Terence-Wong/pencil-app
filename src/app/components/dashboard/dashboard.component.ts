@@ -53,8 +53,15 @@ export class DashboardComponent implements OnInit {
       }
     }, 200);
 
-    console.log(this.auth.data);
-    this.editor.setContent(this.auth.data);
+    this.auth.load().then(() => {
+      console.log(this.auth.data);
+      this.editor.setContent(this.auth.data);
+    });
+    // if you're reading this, this means you actually care about this code and/or are wondering
+    // why on earth this auth token never fetches right
+
+    // I think i'm hitting this https://github.com/firebase/firebase-js-sdk/issues/3179 issue 
+    // whose solution should be hitting a firebase patch next week, at the time of writing.
   }
 
   signOut(): void{
