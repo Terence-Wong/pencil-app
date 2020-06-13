@@ -21,8 +21,9 @@ export class AuthenticationService {
     public ngZone: NgZone, // NgZone service to remove outside scope warning
     private userdb: UserService
     ) { 
-       /* Saving user data in localstorage when 
-      logged in and setting up null when logged out */
+      //hopefully this fixes auth token taking too long to fetch
+      this.afs.firestore.settings({ experimentalForceLongPolling: true });
+
       this.afAuth.authState.subscribe(user => {
         if (user) {
           this.userData = user;
@@ -49,7 +50,7 @@ export class AuthenticationService {
   }
   // Sign in with Google
   GoogleAuth() {
-    return this.AuthLogin(new auth.GoogleAuthProvider()).then(result => {
+    this.AuthLogin(new auth.GoogleAuthProvider()).then(result => {
       console.log("auth token should be ready by now");
       this.SetUserData(this.user).then(() => {
         this.ngZone.run(() => {

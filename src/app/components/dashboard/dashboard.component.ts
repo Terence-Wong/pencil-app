@@ -22,7 +22,7 @@ export class DashboardComponent implements OnInit {
   countDown: any = timer(0, 1500);
   time: number = 100;
 
-  constructor(public auth: AuthenticationService, private userdb: UserService) {
+  constructor(public auth: AuthenticationService) {
     
   }
 
